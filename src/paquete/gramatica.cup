@@ -1,0 +1,343 @@
+package paquete;
+
+import java_cup.runtime.*;
+import java.io.FileReader;
+import AST.*;
+
+parser code {:
+    
+    /* Reporte de error encontrado. */
+    public void report_error(String message, Object info) {
+        StringBuilder m = new StringBuilder("Error");
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+            if (s.left >= 0) {                
+                m.append(" in line "+(s.left+1));
+                if (s.right >= 0)
+                    m.append(", column "+(s.right+1));
+            }
+        }
+        m.append(" : "+message);
+        System.err.println(m);
+    }
+   
+    /* Cuando se encuentra un error de donde el sistema no puede
+        recuperarse, se lanza un error fatal. Se despliega el mensaje
+        de error y se finaliza la ejecucion. */
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+        System.exit(1);
+    }
+
+    /* Metodo main para garantizar la ejecucion del analizador
+       lexico y sintactico, ademas que se pase como parametro la tabla
+       de simbolos correspondiente. */
+    
+:};
+
+action code {:
+  private boolean debug=true;
+  private NodoBase ast = null;
+  private int lineanum=0;
+  
+  //Debe ser llamada solo despues de un parse(), en caso contrario retornara null siempre;
+  public NodoBase getASTroot(){
+    return ast;
+  }
+  
+:}
+
+terminal  Token  NUMERO;
+terminal  Token  CADENA;	
+terminal  Token  FECHA;
+terminal  Token  IPAREN;
+terminal  Token  DPAREN;
+terminal  Token  COMA;
+terminal  Token  PUNTO;
+terminal  Token  SUMA;
+terminal  Token  MULTI;
+terminal  Token  DIVI;
+terminal  Token  RESTA;
+terminal  Token  MENORIGUAL;
+terminal  Token  MAYORIGUAL;
+terminal  Token  MENOR;
+terminal  Token  MAYOR;
+terminal  Token  DIFERENTE;
+terminal  Token  EQ;
+terminal  Token  OR;
+terminal  Token  AND;
+terminal  Token  NOT;
+terminal  Token  DIF;
+terminal  Token  UNI;
+terminal  Token  PROC;
+terminal  Token  INT;
+terminal  Token  PRO;
+terminal  Token  SEL;
+terminal  Token  COMILLA;
+
+
+non terminal NodoBase consulta;
+non terminal NodoBase exp_pro;
+non terminal NodoBase sec_atrib;
+non terminal NodoBase exp_sel;
+non terminal NodoBase exp_procar;
+non terminal NodoBase exp_int;
+non terminal NodoBase exp_opud;
+non terminal NodoOpBi opud;
+non terminal NodoBase exp_or;
+non terminal NodoBase exp_and;
+non terminal NodoBase exp_not;
+non terminal NodoBase exp_igdi;
+non terminal NodoBase exp_menmay;
+non terminal NodoOpBi opigdi;
+non terminal NodoOpBi opmenmay;
+non terminal NodoBase exp_suma;
+non terminal NodoOpBi opsuma;
+non terminal NodoBase termino;
+non terminal NodoOpBi opmult;
+non terminal NodoBase factor;
+
+
+consulta ::=  	exp_opud:e{: ast=e;:}
+			;
+
+exp_opud    ::=    exp_opud:i opud:nodoOpud exp_int:d 
+                                        {:
+                                            nodoOpud.setHijoIzquierdo(i);
+                                            nodoOpud.setHijoDerecho(d);    
+                                            RESULT=nodoOpud;
+                                         :}
+
+
+                        
+                                    | exp_int:e{: RESULT =e; :}
+
+                        ;           
+
+opud      ::=    UNI:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+		   |DIF:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+			;
+			
+
+exp_int     ::=    exp_int:i INT:t exp_procar:d
+
+                                         {:
+                                                
+                                            RESULT= new NodoOpBi(i,t,d);
+                                         :}
+
+                                    | exp_procar:e {: RESULT =e; :}
+
+                        ;
+
+exp_procar  ::=    exp_procar:i PROC:t exp_pro:d
+                                         {:
+                                                
+                                            RESULT= new NodoOpBi(i,t,d);
+                                         :}
+                                    
+                                    | exp_pro:e {: RESULT =e; :} 
+                                        
+                        ;
+                                            
+
+exp_pro     ::=   PRO:t sec_atrib:i exp_pro:d
+                                         {:
+                                                
+                                            RESULT= new NodoOpBi(i,t,d);
+                                         :}
+
+                                    | exp_sel:e {: RESULT =e; :} 
+
+			;
+
+sec_atrib   ::=   CADENA:c COMA sec_atrib:d
+                                       {:
+                                        
+                                         RESULT= new NodoAtributo(c,d);
+					:}		
+                                    
+                                    | CADENA:c {: RESULT = new NodoAtributo(c); :} 
+                                        
+
+                        ;
+
+exp_sel     ::=   SEL:t  exp_or:i exp_sel:d
+                                    {:
+                                                
+                                        RESULT= new NodoOpBi(i,t,d);
+                                     :}
+                                    
+                                    | IPAREN exp_opud:e DPAREN {: RESULT =e; :} 
+
+                                    | CADENA:c{:RESULT = new NodoRelacion(c);:}
+                                    
+                                    | CADENA:c CADENA:a{:RESULT = new NodoRelacion(c,a);:} 
+
+                        ;
+
+exp_or      ::=    exp_or:i OR:t exp_and:d
+                                    {:
+                                                
+                                      RESULT= new NodoOpBi(i,t,d);
+                                    :}
+                                    
+                                    | exp_and:e {: RESULT =e; :}  
+
+
+                        ;
+
+exp_and     ::=    exp_and:i AND:t exp_not:d
+                                    {:  
+                                              
+                                     RESULT= new NodoOpBi(i,t,d);
+                                    :}
+
+                                    | exp_not:e {: RESULT =e; :}  
+
+
+                         ;
+
+
+exp_not     ::=    NOT:t exp_not:d 
+                                    {:  
+                                              
+                                     RESULT= new NodoNot(t,d);
+                                    :}
+
+                                    | exp_igdi:e {: RESULT =e; :} 
+
+                         ;
+
+exp_igdi    ::=    exp_igdi:i opigdi:nodoOpigdi exp_menmay:d
+                                    {:  
+                                              
+                                     nodoOpigdi.setHijoIzquierdo(i);
+                                     nodoOpigdi.setHijoDerecho(d);    
+                                     RESULT=nodoOpigdi;
+                                    :}
+
+                                    | exp_menmay:e {: RESULT =e; :} 
+
+                         ;
+
+opigdi      ::=    EQ:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+		   |DIFERENTE:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+			;
+         
+                         
+
+exp_menmay    ::=    exp_menmay:i opmenmay:nodoOpmm exp_suma:d
+                                    {:  
+                                              
+                                     nodoOpmm.setHijoIzquierdo(i);
+                                     nodoOpmm.setHijoDerecho(d);    
+                                     RESULT=nodoOpmm;
+                                    :}
+
+                                    | exp_suma:e {: RESULT =e; :} 
+
+                         ;
+
+opmenmay     ::=    MENOR:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+		   |MAYOR:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+		   |MENORIGUAL:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+		   |MAYORIGUAL:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+			;
+
+
+exp_suma   ::=     exp_suma:i opsuma:nodoOpsu termino:d
+                                    {:  
+                                              
+                                     nodoOpsu.setHijoIzquierdo(i);
+                                     nodoOpsu.setHijoDerecho(d);    
+                                     RESULT=nodoOpsu;
+                                    :}
+
+                                    | termino:e {: RESULT =e; :}  
+                         ;
+
+opsuma     ::=     SUMA:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+		   |RESTA:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+			;
+
+termino    ::=     termino:i opmult:nodoOpmul factor:d
+                                    {:  
+                                              
+                                     nodoOpmul.setHijoIzquierdo(i);
+                                     nodoOpmul.setHijoDerecho(d);    
+                                     RESULT=nodoOpmul;
+                                    :}
+
+                                    | factor:e {: RESULT =e; :}  
+
+                          ;
+
+opmult     ::=     MULTI:t
+			{:
+				RESULT=new NodoOpBi(null,t,null);
+			:}
+
+                    | DIVI:d
+                        {:
+                                RESULT=new NodoOpBi(null,d,null);
+                        :};
+
+factor     ::=     NUMERO:valor 
+
+                        {:
+				if(valor!=null)
+                                {
+				   RESULT= new NodoNumero(valor);					
+				}
+                                
+                                else{
+				    RESULT = null;
+				    System.out.println("Ocurrio error en cup # 0005");
+				    }
+			:}
+
+                    | CADENA:c {: RESULT = new NodoAtributo(c); :}
+
+                    | CADENA:a PUNTO CADENA:c{: RESULT = new NodoAtributo(a,c);:}
+
+                    | COMILLA CADENA:c COMILLA {: c.setTipo("cadena");RESULT = new NodoCadena(c); :} 
+
+                    | FECHA:f {: RESULT = new NodoFecha(f); :} 
+
+                    | IPAREN exp_or:e DPAREN {: RESULT=e;:}
+
+
+;
+
+

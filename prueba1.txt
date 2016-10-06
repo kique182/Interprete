@@ -1,0 +1,1 @@
+PRO nc(prestatario) INT PRO nc(impositor)

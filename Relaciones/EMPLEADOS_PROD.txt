@@ -1,0 +1,6 @@
+dni(cadena);nombreemp(cadena);apellidoemp(cadena);edificiodesp(cadena);numerodesp(numero)
+33567711;Marta;Roca;Marina;120
+55898425;Carlos;Buendia;Diagonal;120
+77232144;Elena;Pla;Marina;230
+21335245;Jorge;Soler;Alguna;150
+88999210;Pedro;Gonzalez;Diagonal;120

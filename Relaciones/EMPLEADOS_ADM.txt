@@ -1,0 +1,3 @@
+dni(cadena);nombre(cadena);apellido(cadena);edificiodesp(cadena);numerodesp(numero)
+"40444255";"Juan";Garcia;Marina;120
+33567711;Marta;Roca;Marina;120

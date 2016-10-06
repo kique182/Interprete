@@ -1,0 +1,2 @@
+(PRO nombre_cliente, nombre_sucursal((impositor)PROC (cuenta)))
+INT (PRO sucursal(SEL ciudad="Arganzuela"(sucursal)))

@@ -1,0 +1,3 @@
+edificio(cadena);supmediadesp(numero)
+marina;15
+diagonal;10

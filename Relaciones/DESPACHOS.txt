@@ -1,0 +1,5 @@
+edificio(cadena);numero(numero);superficie(numero)
+marina;120;11
+marina;230;232
+diagonal;120;10
+diagonal;440;10

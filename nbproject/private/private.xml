@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/Xmnz/Documents/NetBeansProjects/Compilador2/Compilador2/src/paquete/gramatica.cup</file>
+            <file>file:/C:/Users/Xmnz/Documents/NetBeansProjects/Compilador2/Compilador2/src/paquete/prueba.flex</file>
+            <file>file:/C:/Users/Xmnz/Documents/NetBeansProjects/Compilador2/Compilador2/src/AST/NodoCadena.java</file>
+            <file>file:/C:/Users/Xmnz/Documents/NetBeansProjects/Compilador2/Compilador2/src/AST/NodoBase.java</file>
+            <file>file:/C:/Users/Xmnz/Documents/NetBeansProjects/Compilador2/Compilador2/src/paquete/AnalizadorLexico.java</file>
+            <file>file:/C:/Users/Xmnz/Documents/NetBeansProjects/Compilador2/Compilador2/src/paquete/AnalizadorSemantico.java</file>
+            <file>file:/C:/Users/Xmnz/Documents/NetBeansProjects/Compilador2/Compilador2/src/paquete/PruebaLexica.java</file>
+        </group>
+    </open-files>
+</project-private>

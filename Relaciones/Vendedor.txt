@@ -1,0 +1,5 @@
+nombre(cadena)
+Jimenez
+Arana
+Fernando
+Javier

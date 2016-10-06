@@ -1,0 +1,5 @@
+apellido(cadena);cedula(numero)
+Jimenez;123
+Arana;321
+Fernando;456
+Javier;654

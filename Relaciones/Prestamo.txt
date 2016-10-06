@@ -1,0 +1,5 @@
+numero_prestamo(cadena);nombre_sucursal(cadena);importe(numero)
+"P-11";"Collado Mediano";900
+"P-14";"Centro";1500
+"P-15";"Arriba";200
+"P-29";"Casa";2800

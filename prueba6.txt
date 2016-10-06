@@ -1,0 +1,1 @@
+SEL relacionDedificio=5 SEL relacionInumero = relacionDnumero AND relacionIsuperficie=11 (DESPACHOSa PROC DESPACHOS)

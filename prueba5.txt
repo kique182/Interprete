@@ -1,0 +1,3 @@
+(PRO patente,rut_chofer ( Movil) DIF PRO rut(SEL NOT fe_li_ha<18/07/1990 AND fe_li_ha>=01/01/1990(Chofer)))
+
+UNI (PRO rut_chofer(SEL a.rut_chofer= b.rut(Movil a PROC Chofer b)) INT PRO rut_chofer(SEL rel (Movil PROC (PRO atri relaci ))))
